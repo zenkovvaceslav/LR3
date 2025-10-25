@@ -1,0 +1,337 @@
+import logging
+logger = logging.getLogger(__name__)
+
+iterations = 0
+
+logging.basicConfig(
+    filename="app.log",
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+logger.debug("debug")
+logger.info("info")
+logger.warning("warning")
+logger.error("error")
+logger.critical("critical")
+
+
+
+def bubble_sort(nums):
+    logger.info("сортировка bubble")
+    swapped = True
+    iterations = 0
+
+    while swapped:
+        swapped = False
+        for i in range(len(nums) - 1):
+            iterations += 1
+            logger.info("")# тут  и в последующих logger.info() должны быть шаги сортировки, но мне не оч хочетс писать это для всех функций
+
+            if nums[i] > nums[i + 1]:
+                logger.info("")
+                nums[i], nums[i + 1] = nums[i + 1], nums[i]
+                swapped = True
+    logger.info(f"кол-во итераций: {iterations}")
+
+    bubble_sort.iteration = iterations
+
+
+random_list_of_nums = [5, 2, 1, 8, 4]
+
+bubble_sort(random_list_of_nums)
+
+print("отсортир.:", random_list_of_nums)
+print("кол-во:", bubble_sort.iteration)
+
+
+
+
+
+
+
+
+def selection_sort(nums):  
+    logger.info("сортировка selection")
+    iterations = 0
+
+    for i in range(len(nums)):
+        lowest_value_index = i
+        for j in range(i + 1, len(nums)):
+            iterations += 1
+            logger.info("")
+            if nums[j] < nums[lowest_value_index]:
+                logger.info("")
+                lowest_value_index = j
+        nums[i], nums[lowest_value_index] = nums[lowest_value_index], nums[i]
+    logger.info(f"кол-во итераций: {iterations}")
+
+    selection_sort.iteration = iterations
+
+
+random_list_of_nums = [5, 2, 1, 8, 4]
+selection_sort(random_list_of_nums)
+
+print("отсортир.:", random_list_of_nums)
+print("кол-во:", selection_sort.iteration)
+
+
+
+
+
+
+
+
+
+def insertion_sort(nums):  
+    logger.info("сортировка insertion")
+    iterations = 0
+
+    for i in range(1, len(nums)):
+        item_to_insert = nums[i]
+        j = i - 1
+        iterations += 1
+        logger.info("")
+        while j >= 0 and nums[j] > item_to_insert:
+            nums[j + 1] = nums[j]
+            j -= 1
+            iterations += 1
+            logger.info("")
+        nums[j + 1] = item_to_insert
+    logger.info(f"кол-во итераций: {iterations}")
+    
+    insertion_sort.iteration = iterations
+
+
+random_list_of_nums = [5, 2, 1, 8, 4]
+insertion_sort(random_list_of_nums)
+
+print("отсортир.:", random_list_of_nums)
+print("кол-во:", insertion_sort.iteration)
+
+
+
+
+
+
+
+
+
+def heapify(nums, heap_size, root_index):
+    largest = root_index
+    global iterations
+    logger.info("сортировка heap_sort")
+    left_child = (2 * root_index) + 1
+    right_child = (2 * root_index) + 2
+
+    iterations += 1
+    if left_child < heap_size and nums[left_child] > nums[largest]:
+        largest = left_child
+        logger.info("")
+    iterations += 1
+    if right_child < heap_size and nums[right_child] > nums[largest]:
+        largest = right_child
+        logger.info("")
+
+    if largest != root_index:
+        nums[root_index], nums[largest] = nums[largest], nums[root_index]
+        heapify(nums, heap_size, largest)
+        return nums, iterations
+
+def heap_sort(nums):
+    n = len(nums)
+    global iterations
+    iterations = 0
+    for i in range(n, -1, -1):
+        heapify(nums, n, i)
+
+    for i in range(n - 1, 0, -1):
+        nums[i], nums[0] = nums[0], nums[i]
+        heapify(nums, i, 0)
+        
+    logger.info(f"кол-во итераций: {iterations}")
+    
+    heap_sort.iteration = iterations
+
+
+random_list_of_nums = [5, 2, 1, 8, 4]
+heap_sort(random_list_of_nums)  
+
+print("отсортир.:", random_list_of_nums)
+print("кол-во:", heap_sort.iteration)
+
+
+
+
+
+
+
+
+
+def merge(left_list, right_list):  
+    iterations = 0
+    sorted_list = []
+    left_list_index = right_list_index = 0
+
+    left_list_length, right_list_length = len(left_list), len(right_list)
+
+    for _ in range(left_list_length + right_list_length):
+        if left_list_index < left_list_length and right_list_index < right_list_length:
+            if left_list[left_list_index] <= right_list[right_list_index]:
+                iterations += 1
+                sorted_list.append(left_list[left_list_index])
+                left_list_index += 1
+            else:
+                sorted_list.append(right_list[right_list_index])
+                iterations += 1
+                right_list_index += 1
+
+        elif left_list_index == left_list_length:
+            iterations += 1
+            sorted_list.append(right_list[right_list_index])
+            right_list_index += 1
+
+        elif right_list_index == right_list_length:
+            iterations += 1
+            sorted_list.append(left_list[left_list_index])
+            left_list_index += 1
+
+    logger.info(f"кол-во итераций: {iterations}")
+    merge_sort.iteration = iterations
+
+    return sorted_list
+
+
+def merge_sort(nums):
+    iterations = 0
+    if len(nums) <= 1:
+        return nums
+
+    mid = len(nums) // 2
+
+
+    left_list = merge_sort(nums[:mid])
+    right_list = merge_sort(nums[mid:])
+
+    return merge(left_list, right_list)
+
+
+
+
+random_list_of_nums = [5, 2, 1, 8, 4]
+merge_sort.iteration = 0
+logger.info("сортировка merge")
+
+sorted_nums = merge_sort(random_list_of_nums)       # запуск сортировки
+
+logger.info(f"кол-во итераций: {merge_sort.iteration}")   # ← и финальный лог
+new_list = merge_sort(random_list_of_nums)  
+print("отсортир.:", new_list)
+print("кол-во:", merge_sort.iteration)
+
+
+
+
+
+
+
+
+
+def partition(nums, low, high):
+    pivot = nums[(low + high) // 2]
+    i = low - 1
+    j = high + 1
+
+    while True:
+        i += 1
+        quick_sort.iteration += 1
+        logger.info("")
+        
+        while nums[i] < pivot:
+            i += 1
+            quick_sort.iteration += 1
+            logger.info("")
+
+        j -= 1
+        quick_sort.iteration += 1
+        logger.info("")
+
+        while nums[j] > pivot:
+            j -= 1
+            quick_sort.iteration += 1
+            logger.info("")
+
+        if i >= j:
+            return j
+
+        nums[i], nums[j] = nums[j], nums[i]
+        
+def quick_sort(nums):
+    quick_sort.iteration = 0
+    logger.info("сортировка quick")
+    def _quick_sort(items, low, high):
+        if low < high:
+            split_index = partition(items, low, high)
+            _quick_sort(items, low, split_index)
+            _quick_sort(items, split_index + 1, high)
+
+    _quick_sort(nums, 0, len(nums) - 1)
+
+    logger.info(f"кол-во итераций: {quick_sort.iteration}")  
+    return nums
+
+
+random_list_of_nums = [5, 2, 1, 8, 4]
+quick_sort(random_list_of_nums)  
+
+print("отсортир.:", random_list_of_nums)
+print("кол-во:", quick_sort.iteration)
+
+
+
+
+
+#Встроенные функции сортировки в Python:
+
+apples_eaten_a_day = []
+apples_eaten_a_day.sort()
+
+#Можно и с sorted
+apples_eaten_a_day_2 = []
+sorted_apples = sorted(apples_eaten_a_day_2)
+
+
+
+#Выше 2 функции сортируют только в порядке возрастания, через флаги можно сделать обратную сортировку
+
+apples_eaten_a_day.sort(reverse=True)
+
+sorted_apples_desc = sorted(apples_eaten_a_day_2, reverse=True)
+
+
+
+
+#теперь добавлю визуализацию для функции(пусть будет bubble)
+def bubble_sort_visual(nums):
+    logger.info("визуализация bubble")
+    a = nums.copy()
+    n = len(a)
+    iterations = 0
+
+    for i in range(n - 1):
+        for j in range(n - i - 1):
+            iterations += 1
+            logger.info("")   # шаг
+            print(a)        # ← визуализация в консоли
+
+            if a[j] > a[j + 1]:
+                a[j], a[j + 1] = a[j + 1], a[j]
+
+    logger.info(f"кол-во итераций: {iterations}")
+    print("отсортир. массив:", a)
+    return a
+nums = [5, 2, 1, 8, 4]
+bubble_sort_visual(nums)
+
+
